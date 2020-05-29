@@ -42,6 +42,8 @@ files
 d <- read_csv(files[1]) %>%
   clean_names()
 
+head(d)
+
 ```
 
 ## Task 1: Plotting mobility trends by country 
@@ -155,6 +157,8 @@ by_country_mobil_cat <- d %>%
     values_to = "perc_change"
   ) %>%
   nest(-country, -mobil_category)
+
+head(by_country_mobil_cat)
 
 # Then loop through data and apply the plotting function we created: 
 

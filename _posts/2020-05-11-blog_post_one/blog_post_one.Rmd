@@ -61,6 +61,8 @@ create_setup <- function(dir = getwd()) {
 }
 
 create_setup(here::here("temporary-wd"))
+
+#This is extremely helpful. I think the students beginning the R sequence next year would really benefit from reading this post!
 ```
 
 In the code chunk above, we used "temporary-wd" as a placeholder for whatever you want to call your project. If you replace "temporary-wd" with whatever you want to call your project, you will create a new RStudio project, complete with three new folders inside (data, scripts, plots) to get started.

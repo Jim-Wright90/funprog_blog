@@ -100,12 +100,27 @@ files <- list.files(here::here("data"),
 d <- read_csv(files[1]) %>%
   clean_names()
 
+head(d)
 #consider changing width in code chunk to see whole table,
 reactable(d,  
+          columns = list(
+            country = colDef(name = "Country"),
+            date = colDef(name = "Date"),
+            grocery_pharmacy = colDef(name = "Grocery/Pharmacy"),
+            parks = colDef(name = "Parks"),
+            retail_recreation = colDef(name = "Retail/Recreation"),
+            transit_stations = colDef(name = "Transit Stations"),
+            workplaces = colDef(name = "Workplaces"),
+            total_cases = colDef(name = "Total Cases"),
+            fatalities = colDef(name = "Fatalities")
+          ),
           height = 500,
           striped = TRUE, 
           compact = TRUE, 
-          outlined = TRUE)
+          outlined = TRUE,
+          searchable = TRUE)
+
+# with such a large data set, I added the searchable function into your reacatable table to help the user more quickly identify specific values 
 
 #gt not suitable here
 # library(gt)
@@ -178,6 +193,7 @@ After nesting, you see that our new dataframe now contains a list-column named `
 ```{r}
 
 d2$data[[1]]
+d2$data[[4]]
 
 ```
 
@@ -193,6 +209,8 @@ map_dbl(d2$data, ncol)
 
 #if you want to find the mean for just one specif column, by each country and week
 map_dbl(d2$data, ~mean(.x$residential))
+
+map_dbl(d2$data, ~sd(.x$fatalities))
 
 ```
 
@@ -211,6 +229,8 @@ In order to figure out how to create a function that can be used for any variabl
 ```{r, eval = TRUE, echo = TRUE}
 
 mean(d2$data[[1]]$residential)
+
+sd(d2$data[[1]]$residential)
 
 ```
 
@@ -232,11 +252,23 @@ Finally, we can generalize this further to loop through each cell in the data co
 ```{r error = TRUE}
 
 ####Feedback would be appreciated about how to use map to loop through each numeric column within the nested data (d2)
+head(d2)
 
 means_c_w <- d2 %>%
   mutate(means = map(d2$data, ~mean(data = .x))) %>% 
   select(-data) %>% 
   unnest(means)
+
+#I think a function like the one developed for lab 4 should solve this problem, but I'm not confident on how to get it to run
+
+means_cw <- function(x) {
+  if(!is.numeric(pull(x)))
+    stop("Supplied column is not numeric")
+  x %>% 
+    summarize(mean(x))
+}
+
+means_cw(d2$fatalities)
 
 #this works at returning the mean for all numeric variable, but is not pretty and also loses the labels for country
 test <- d2$data %>% map(~ map_dbl(.x, mean))
